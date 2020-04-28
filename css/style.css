@@ -35,7 +35,6 @@ label {
 
 .btn-primary {
 	background-color: rgb(129, 86, 208);
-	font-size: 1.1em;
 	margin-bottom: 1em;
 	margin-top: 1em;
 	width: 40%;
@@ -43,13 +42,11 @@ label {
 
 #display-text {
 	color: black;
-	font-size: 1.1em;
 	font-weight: 700;
 }
 
 .div-text {
 	color: white;
-	font-size: 1.1em;
 	margin-bottom: 3em;
 	margin-top: 1em;
 	text-align: center;
