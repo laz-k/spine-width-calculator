@@ -17,7 +17,7 @@
 	],
 	"lang": "en",
 	"display": "standalone",
-	"start_url": "/",
+	"start_url": "https://laz-k.github.io/spine-width-calculator/",
 	"theme_color": "#8156d0",
 	"background_color": "#2a1c36"
 }
