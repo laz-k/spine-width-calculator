@@ -1,3 +1,19 @@
+window.addEventListener("load", () => {
+	if (!("serviceWorker" in navigator)) {
+		// service workers not supported 😣
+		return;
+	}
+
+	navigator.serviceWorker.register("/service-worker.js").then(
+		() => {
+			// registered! 👍🏼
+		},
+		(err) => {
+			console.error("SW registration failed! 😱", err);
+		}
+	);
+});
+
 let paper = {};
 paper["essential-silk"] = [
 	"90gsm",
@@ -52,20 +68,6 @@ function changePaperList() {
 			paperWeightList.options.add(cat);
 		}
 	}
-}
-
-if ("serviceWorker" in navigator) {
-	console.log("CLIENT: service worker registration in progress.");
-	navigator.serviceWorker.register("../service-worker.js").then(
-		function () {
-			console.log("CLIENT: service worker registration complete.");
-		},
-		function () {
-			console.log("CLIENT: service worker registration failure.");
-		}
-	);
-} else {
-	console.log("CLIENT: service worker is not supported.");
 }
 
 let divText = document.querySelector("#div-text");
