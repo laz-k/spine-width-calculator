@@ -4,7 +4,7 @@ window.addEventListener("load", () => {
 		return;
 	}
 
-	navigator.serviceWorker.register("/service-worker.js").then(
+	navigator.serviceWorker.register("service-worker.js").then(
 		() => {
 			// registered! 👍🏼
 		},
