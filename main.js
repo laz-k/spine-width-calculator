@@ -14,263 +14,92 @@ window.addEventListener("load", () => {
 	);
 });
 
-let paper = {};
-paper["essential-silk"] = [
-	"90gsm",
-	"100gsm",
-	"115gsm",
-	"135gsm",
-	"150gsm",
-	"170gsm",
-];
-paper["lumi-silk"] = [
-	"90gsm",
-	"100gsm",
-	"115gsm",
-	"135gsm",
-	"150gsm",
-	"170gsm",
-];
-paper["colour-copy"] = ["90gsm", "100gsm", "120gsm", "160gsm"];
-paper["essential-offset"] = [
-	"80gsm",
-	"90gsm",
-	"100gsm",
-	"120gsm",
-	"135gsm",
-	"150gsm",
-	"170gsm",
-];
-paper["inaset"] = [
-	"80gsm",
-	"90gsm",
-	"100gsm",
-	"120gsm",
-	"135gsm",
-	"150gsm",
-	"170gsm",
+const paper = [
+	{
+		name: "Inaset Offset",
+		weight: ["80gsm", "90gsm", "100gsm", "120gsm", "135gsm"],
+		microns: [0.106, 0.119, 0.13, 0.152, 0.162],
+	},
+	{
+		name: "Navigator Offset",
+		weight: ["80gsm", "90gsm", "100gsm", "120gsm"],
+		microns: [0.11, 0.115, 0.12, 0.128],
+	},
+	{
+		name: "Essential Offset",
+		weight: ["80gsm", "90gsm", "100gsm", "120gsm", "135gsm", "150gsm", "170gsm"],
+		microns: [0.103, 0.114, 0.123, 0.146, 0.168, 0.18, 0.2],
+	},
+	{
+		name: "Essential Silk",
+		weight: ["90gsm", "100gsm", "115gsm", "135gsm", "150gsm", "170gsm"],
+		microns: [0.08, 0.089, 0.104, 0.112, 0.133, 0.156],
+	},
+	{
+		name: "Lumi Silk",
+		weight: ["90gsm", "100gsm", "115gsm", "135gsm", "150gsm"],
+		microns: [0.078, 0.087, 0.094, 0.11, 0.127],
+	},
+	{
+		name: "Colour Copy",
+		weight: ["90gsm", "100gsm", "120gsm", "160gsm"],
+		microns: [0.098, 0.106, 0.126, 0.166],
+	},
 ];
 
-function createPaperWeightList() {
-	let paperList = document.getElementById("paper-type");
-	let paperWeightList = document.getElementById("paper-weight");
-	let selectedPaper = paperList.options[paperList.selectedIndex].value;
+let paperNames = [];
+paper.forEach(paper => paperNames.push(paper.name));
 
-	while (paperWeightList.options.length > 0) {
-		paperWeightList.remove(0);
+const selectPaperName = document.getElementById("paperName");
+paperNames.forEach((el, key) => (selectPaperName[key] = new Option(el, key)));
+
+function genPaperWeightList() {
+	let getPaperName = document.getElementById("paperName").options[selectPaperName.selectedIndex].text;
+
+	let selectPaperWeight = document.getElementById("paperWeight");
+
+	while (selectPaperWeight.options.length > 0) {
+		selectPaperWeight.remove(0);
 	}
 
-	let paperType = paper[selectedPaper];
-	if (paperType) {
-		for (let i = 0; i < paperType.length; i++) {
-			let weight = new Option(paperType[i], i);
-			paperWeightList.options.add(weight);
+	let weightOption;
+	paper.forEach(paper => {
+		if (getPaperName === paper.name) {
+			weightOption = paper.weight;
+			weightOption.value = paper.microns;
 		}
-	}
-	resetResult();
+	});
+
+	weightOption.forEach((element, index) => (selectPaperWeight[index] = new Option(element, index)));
+
+	weightOption.forEach((element, index) => (selectPaperWeight.options[index].value = weightOption.value[index]));
+
+	let paperThickness = document.getElementById("paperWeight").options[paperWeight.selectedIndex].value;
 }
 
-let resultText = document.querySelector("#result-text");
-let paperType = document.querySelector("#paper-type");
-let numOfPages = document.querySelector("#number-of-pages");
-let paperWeight = document.querySelector("#paper-weight");
-let resultInputText = document.querySelector("#result-input-text");
-let form = document.querySelector("#calc-form");
-let result;
+const numberOfPages = document.querySelector("#number-of-pages");
+const spineWidth = document.querySelector("#spine-width-result");
 
 function spineWidthCalculator() {
-	if (paperType.value == "essential-silk") {
-		essentialSilk();
-	} else if (paperType.value == "lumi-silk") {
-		lumiSilk();
-	} else if (paperType.value == "colour-copy") {
-		colourCopy();
-	} else if (paperType.value == "essential-offset") {
-		essentialOffset();
+	const paperWeight = document.querySelector("#paperWeight");
+	if (numberOfPages.value >= 20 && numberOfPages.value <= 600) {
+		const spineWidthResult = (numberOfPages.value / 2) * paperWeight.value + 0.4;
+		spineWidth.value = spineWidthResult.toFixed(2) + " mm";
 	} else {
-		inaset();
+		alert("The minimum number of pages is 20 and the maximum 600");
+		numberOfPages.value = 20;
 	}
 }
-form.reset();
 
 function resetResult() {
-	resultInputText.value = "";
-	resultText.innerHTML = "";
-}
-document.getElementById("number-of-pages").onkeypress = submitEnter;
-function submitEnter(e) {
-	if (e.which == 13) {
-		spineWidthCalculator();
-	}
+	spineWidth.value = "";
 }
 
-function essentialSilk() {
-	switch (paperWeight.value) {
-		case "0":
-			result = ((numOfPages.value * 0.08) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "1":
-			result = ((numOfPages.value * 0.089) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "2":
-			result = ((numOfPages.value * 0.104) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "3":
-			result = ((numOfPages.value * 0.112) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "4":
-			result = ((numOfPages.value * 0.133) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "5":
-			result = ((numOfPages.value * 0.156) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
+document.getElementById("number-of-pages").onkeypress = event => {
+	if (event.which == 13 && numberOfPages.value >= 20 && numberOfPages.value <= 600) {
+		spineWidthCalculator();
 	}
-}
-function lumiSilk() {
-	switch (paperWeight.value) {
-		case "0":
-			result = ((numOfPages.value * 0.078) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "1":
-			result = ((numOfPages.value * 0.087) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "2":
-			result = ((numOfPages.value * 0.094) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "3":
-			result = ((numOfPages.value * 0.11) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "4":
-			result = ((numOfPages.value * 0.127) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "5":
-			result = ((numOfPages.value * 0.144) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-	}
-}
-function colourCopy() {
-	switch (paperWeight.value) {
-		case "0":
-			result = ((numOfPages.value * 0.098) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "1":
-			result = ((numOfPages.value * 0.106) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "2":
-			result = ((numOfPages.value * 0.126) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-		case "3":
-			result = ((numOfPages.value * 0.166) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine should be ${result} mm wide`;
-			break;
-	}
-}
-function essentialOffset() {
-	switch (paperWeight.value) {
-		case "0":
-			result = ((numOfPages.value * 0.103) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "1":
-			result = ((numOfPages.value * 0.114) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "2":
-			result = ((numOfPages.value * 0.123) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "3":
-			result = ((numOfPages.value * 0.146) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "4":
-			result = ((numOfPages.value * 0.168) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "5":
-			result = ((numOfPages.value * 0.18) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "6":
-			result = ((numOfPages.value * 0.2) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-	}
-}
-function inaset() {
-	switch (paperWeight.value) {
-		case "0":
-			result = ((numOfPages.value * 0.106) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "1":
-			result = ((numOfPages.value * 0.119) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "2":
-			result = ((numOfPages.value * 0.13) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "3":
-			result = ((numOfPages.value * 0.152) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "4":
-			result = ((numOfPages.value * 0.162) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "5":
-			result = ((numOfPages.value * 0.18) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-		case "6":
-			result = ((numOfPages.value * 0.205) / 2 + 0.5).toFixed(2);
-			resultInputText.value = `${result} mm`;
-			resultText.innerHTML = `The spine width should be ${result} mm`;
-			break;
-	}
-}
+};
+
+document.addEventListener("load", genPaperWeightList());
+
