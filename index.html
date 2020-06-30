@@ -5,16 +5,12 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<meta name="theme-color" content="#8156d0"/>
-	<meta name="Spine Width Calculator" content="SWCalc"/>
-	<meta name="description" content="A handy progressive web application for designers to calculate the width of a book spine."/>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
-	<link rel="manifest" href="manifest.webmanifest">
+	<meta name="Spine Width Calculator" content="SWCalc" />
 	<link rel="icon" sizes="32x32" href="/images/icon-32.png">
 	<link rel="icon" sizes="512x512" href="/images/icon-512.png">
-	<link rel="apple-touch-icon" href="/images/icon-180.png">
 	<link rel="stylesheet" href="css/style.css">
 	<script src="main.js" defer></script>
 	<title>Spine Width Calculator</title>
@@ -30,32 +26,28 @@
 		<form id="calc-form" onsubmit="return false">
 			<div class="form-group">
 				<label for="paper-type">Select Paper</label>
-				<select class="form-control" name="paper-type" id="paper-type" onchange="createPaperWeightList()">
-					<option value="">Click to Select...</option>
-					<option value="essential-silk">Coated Essential Silk</option>
-					<option value="lumi-silk">Coated Lumi Silk</option>
-					<option value="colour-copy">Uncoated Colour Copy</option>
-					<option value="essential-offset">Uncoated Essential Offset</option>
-					<option value="inaset">Uncoated Inaset Offset</option>
+				<select class="form-control" name="paper-type" id="paperName" onchange="genPaperWeightList()">
+
+
 				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="paper-weight">Select Paper Weight</label>
-				<select class="form-control" name="paper-weight" id="paper-weight" onchange="resetResult()"></select>
+				<select class="form-control" name="paper-weight" id="paperWeight" onchange="resetResult()"></select>
 			</div>
 			<div class="form-group">
-				<label for="number-of-pages">Enter Number Of Pages (minimum is 20)</label>
+				<label for="number-pages">Enter Number Of Pages (minimum is 20)</label>
 				<input name="number-of-pages" maxlength="3" value="20" min="20" max="600" class="form-control"
-					id="number-of-pages" type="number" onkeyup="submitEnter(e)"/>
+					id="number-of-pages" type="number" />
 			</div>
 			<div class="button">
 				<input name="submit-btn" id="submit-btn" class="btn btn-primary" type="button" value="Submit"
 					onclick="spineWidthCalculator()" />
 			</div>
 			<div class="form-group">
-				<label for="display-text">Spine Width</label>
-				<input type="text" class="form-control" name="result-input-text" id="result-input-text" readonly />
+				<label for="display">Spine Width</label>
+				<input type="text" class="form-control" name="spine-width-result" id="spine-width-result" readonly />
 			</div>
 			<div class="result-text" id="result-text">
 			</div>
